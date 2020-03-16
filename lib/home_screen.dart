@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
-import 'player_bloc/player_bloc.dart';
+import 'blocs/player_bloc/player_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   final _planetRockUrl = 'https://stream-mz.planetradio.co.uk/planetrock.mp3';
