@@ -4,8 +4,8 @@ part of 'player_bloc.dart';
 abstract class PlayerEvent {}
 
 class PlayEvent extends PlayerEvent {
-  final String url;
-  PlayEvent({@required this.url}) : assert(url != null);
+  final Station station;
+  PlayEvent(this.station);
 }
 
 class PauseEvent extends PlayerEvent {}

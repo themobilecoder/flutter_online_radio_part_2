@@ -3,6 +3,12 @@ part of 'player_bloc.dart';
 @immutable
 abstract class PlayerState {}
 
-class PlayingState extends PlayerState {}
+class StoppedState extends PlayerState {}
+
+class PlayingState extends PlayerState {
+  final Station currentStation;
+
+  PlayingState(this.currentStation);
+}
 
 class PausedState extends PlayerState {}

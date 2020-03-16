@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:online_radio/blocs/station.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
@@ -65,14 +66,14 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: BlocBuilder<PlayerBloc, PlayerState>(
                 builder: (context, state) {
-                  if (state is PausedState) {
+                  if (state is PausedState || state is StoppedState) {
                     return IconButton(
                       icon: Icon(
                         Icons.play_arrow,
                         size: 32,
                       ),
                       onPressed: () {
-                        context.bloc<PlayerBloc>().add(PlayEvent(url: _planetRockUrl));
+                        context.bloc<PlayerBloc>().add(PlayEvent(Station(_planetRockUrl, '', 'Planet Rock')));
                       },
                     );
                   } else {

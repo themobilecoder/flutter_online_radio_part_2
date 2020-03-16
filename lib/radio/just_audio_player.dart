@@ -4,19 +4,19 @@ import 'package:online_radio/radio/radio_player.dart';
 
 class JustAudioPlayer extends RadioPlayer {
   final audioPlayer = AudioPlayer();
-  var _isUrlSet = false;
 
   @override
-  Future<void> pause() {
-    return audioPlayer.pause();
+  Future<void> setUrl(String url) async {
+    return audioPlayer.setUrl(url);
   }
 
   @override
   Future<void> play({@required String url}) async {
-    if (!_isUrlSet) {
-      await audioPlayer.setUrl(url);
-      _isUrlSet = true;
-    }
     return audioPlayer.play();
+  }
+
+  @override
+  Future<void> pause() {
+    return audioPlayer.pause();
   }
 }
