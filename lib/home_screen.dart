@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
 import 'package:loading/loading.dart';
-import 'package:online_radio/blocs/station.dart';
+import 'package:online_radio/station.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:online_radio/blocs/station.dart';
 import 'package:online_radio/radio/radio_player.dart';
+import 'package:online_radio/station.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';
