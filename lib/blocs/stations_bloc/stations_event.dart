@@ -4,3 +4,5 @@ part of 'stations_bloc.dart';
 abstract class StationsEvent {}
 
 class FetchStations extends StationsEvent {}
+
+class FetchNextStations extends StationsEvent {}

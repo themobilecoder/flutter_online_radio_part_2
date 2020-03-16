@@ -1,12 +1,24 @@
 part of 'stations_bloc.dart';
 
 @immutable
-abstract class StationsState {}
+abstract class StationsState {
+  const StationsState();
+}
 
-class StationsInitial extends StationsState {}
+class LoadingStations extends StationsState {}
 
-class FetchLoadingState extends StationsState {}
+class FetchingNextStationsState extends StationsState {}
 
-class StationsFetchedState extends StationsState {}
+class StationsFetchedState extends StationsState {
+  final List<Station> stations;
+  final int stationPageIndex;
+  final bool hasFetchedAll;
+
+  const StationsFetchedState({@required this.stations, @required this.stationPageIndex, @required this.hasFetchedAll})
+      : assert(stations != null);
+
+  @override
+  List<Object> get props => [stations];
+}
 
 class StationsFetchErrorState extends StationsState {}
