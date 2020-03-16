@@ -32,6 +32,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       radioPlayer.play();
       yield PlayingState(playEvent.station);
     } else if (state is PausedState) {
+      if ((state as PausedState).currentStation != playEvent.station) {
+        radioPlayer.setUrl(playEvent.station.radioUrl);
+      }
       radioPlayer.play();
       yield PlayingState(playEvent.station);
     }
@@ -40,7 +43,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Stream<PlayerState> _handlePauseEvent(PauseEvent pauseEvent) async* {
     if (state is PlayingState) {
       radioPlayer.pause();
-      yield PausedState();
+      yield PausedState((state as PlayingState).currentStation);
     }
   }
 }

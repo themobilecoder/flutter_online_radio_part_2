@@ -11,4 +11,8 @@ class PlayingState extends PlayerState {
   PlayingState(this.currentStation);
 }
 
-class PausedState extends PlayerState {}
+class PausedState extends PlayerState {
+  final Station currentStation;
+
+  PausedState(this.currentStation);
+}
