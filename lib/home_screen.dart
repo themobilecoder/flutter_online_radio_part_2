@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:online_radio/blocs/station.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
+import 'widgets/idle_dots.dart';
 
 class HomeScreen extends StatelessWidget {
   final _planetRockUrl = 'https://stream-mz.planetradio.co.uk/planetrock.mp3';
@@ -22,12 +25,31 @@ class HomeScreen extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Text(
-                'Top Stations',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Top Stations',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
+                    if (state is PausedState || state is StoppedState) {
+                      return IdleDots(
+                        color: Theme.of(context).accentColor,
+                      );
+                    } else {
+                      return Loading(
+                        indicator: LineScalePulseOutIndicator(),
+                        size: 30,
+                        color: Theme.of(context).accentColor,
+                      );
+                    }
+                  })
+                ],
               ),
             ),
             Expanded(

@@ -28,7 +28,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
   Stream<PlayerState> _handlePlayEvent(PlayEvent playEvent) async* {
     if (state is StoppedState) {
-      await radioPlayer.setUrl(playEvent.station.radioUrl);
+      radioPlayer.setUrl(playEvent.station.radioUrl);
       radioPlayer.play();
       yield PlayingState(playEvent.station);
     } else if (state is PausedState) {
