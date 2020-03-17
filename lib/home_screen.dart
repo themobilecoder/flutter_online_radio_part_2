@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
 import 'package:loading/loading.dart';
+import 'package:online_radio/widgets/media_player_sheet.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
@@ -99,96 +100,29 @@ class HomeScreen extends StatelessWidget {
             );
           } else if (state is PlayingState) {
             final currentStation = state.currentStation;
-            return Container(
-              height: 100,
-              color: Theme.of(context).primaryColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        child: Image.network(currentStation.imageUrl),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Center(
-                      child: Text(
-                        currentStation.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.pause,
-                            size: 32,
-                          ),
-                          onPressed: () {
-                            context.bloc<PlayerBloc>().add(PauseEvent());
-                          },
-                        )),
-                  )
-                ],
+            return MediaPlayerSheet(
+              title: currentStation.name,
+              imageUrl: currentStation.imageUrl,
+              mediaButtonIcon: Icon(
+                Icons.pause,
+                size: 32,
               ),
+              onMediaButtonPress: () {
+                context.bloc<PlayerBloc>().add(PauseEvent());
+              },
             );
           } else {
             final currentStation = (state as PausedState).currentStation;
-            return Container(
-              height: 100,
-              color: Theme.of(context).primaryColor,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        child: Image.network(currentStation.imageUrl),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Center(
-                      child: Text(
-                        currentStation.name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.play_arrow,
-                            size: 32,
-                          ),
-                          onPressed: () {
-                            context.bloc<PlayerBloc>().add(PlayEvent(currentStation));
-                          },
-                        )),
-                  )
-                ],
+            return MediaPlayerSheet(
+              title: currentStation.name,
+              imageUrl: currentStation.imageUrl,
+              mediaButtonIcon: Icon(
+                Icons.play_arrow,
+                size: 32,
               ),
+              onMediaButtonPress: () {
+                context.bloc<PlayerBloc>().add(PlayEvent(currentStation));
+              },
             );
           }
         },
