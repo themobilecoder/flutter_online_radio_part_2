@@ -6,6 +6,7 @@ import 'package:online_radio/station.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
+import 'blocs/stations_bloc/stations_bloc.dart';
 import 'widgets/idle_dots.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,52 +20,75 @@ class HomeScreen extends StatelessWidget {
         title: Text('Online Radio'),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Top Stations',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+          padding: const EdgeInsets.only(bottom: 100),
+          child: BlocBuilder<StationsBloc, StationsState>(
+            builder: (context, state) {
+              if (state is LoadingStations) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text('Fetching Stations'),
+                    ],
                   ),
-                  BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
-                    if (state is PausedState || state is StoppedState) {
-                      return IdleDots(
-                        color: Theme.of(context).accentColor,
-                      );
-                    } else {
-                      return Loading(
-                        indicator: LineScalePulseOutIndicator(),
-                        size: 30,
-                        color: Theme.of(context).accentColor,
-                      );
-                    }
-                  })
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 40,
-                  itemBuilder: (context, index) {
-                    return StationListItem(
-                      name: 'Planet Rock',
-                      stationImage: Image.asset(_planetRockImage),
-                    );
-                  }),
-            ),
-          ],
-        ),
-      ),
+                );
+              } else if (state is StationsFetchedState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Top Stations',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
+                            if (state is PausedState || state is StoppedState) {
+                              return IdleDots(
+                                color: Theme.of(context).accentColor,
+                              );
+                            } else {
+                              return Loading(
+                                indicator: LineScalePulseOutIndicator(),
+                                size: 30,
+                                color: Theme.of(context).accentColor,
+                              );
+                            }
+                          })
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: 40,
+                          itemBuilder: (context, index) {
+                            return StationListItem(
+                              name: 'Planet Rock',
+                              stationImage: Image.asset(_planetRockImage),
+                            );
+                          }),
+                    ),
+                  ],
+                );
+              } else {
+                return Center(
+                  child: Text('Error Fetching Statons'),
+                );
+              }
+            },
+          )),
       bottomSheet: Container(
         color: Theme.of(context).primaryColor,
         height: 100,
