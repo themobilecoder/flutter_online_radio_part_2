@@ -10,7 +10,7 @@ part 'stations_state.dart';
 
 class StationsBloc extends Bloc<StationsEvent, StationsState> {
   final StationRepository stationRepository;
-  final int _pageSize = 10;
+  final int _pageSize = 15;
 
   StationsBloc({@required this.stationRepository}) : assert(stationRepository != null);
 
@@ -34,7 +34,7 @@ class StationsBloc extends Bloc<StationsEvent, StationsState> {
         yield StationsFetchedState(
             stations: oldStations..addAll(stations),
             stationPageIndex: index,
-            hasFetchedAll: (stations.length == 0) ? true : false);
+            hasFetchedAll: (stations.length < _pageSize) ? true : false);
       }
     }
   }
