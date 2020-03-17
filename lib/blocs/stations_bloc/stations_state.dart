@@ -16,9 +16,6 @@ class StationsFetchedState extends StationsState {
 
   const StationsFetchedState({@required this.stations, @required this.stationPageIndex, @required this.hasFetchedAll})
       : assert(stations != null);
-
-  @override
-  List<Object> get props => [stations];
 }
 
 class StationsFetchErrorState extends StationsState {}

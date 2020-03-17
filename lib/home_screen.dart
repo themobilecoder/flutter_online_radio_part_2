@@ -21,6 +21,13 @@ class HomeScreen extends StatelessWidget {
       body: Padding(
           padding: const EdgeInsets.only(bottom: 100),
           child: BlocBuilder<StationsBloc, StationsState>(
+            condition: (context, state) {
+              if (state is FetchingNextStationsState) {
+                return false;
+              } else {
+                return true;
+              }
+            },
             builder: (context, state) {
               if (state is LoadingStations) {
                 context.bloc<StationsBloc>().add(FetchStations());
@@ -28,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                   label: 'Fetching stations',
                 );
               } else if (state is StationsFetchedState) {
-                final stations = (context.bloc<StationsBloc>().state as StationsFetchedState).stations;
+                final stations = state.stations;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -49,17 +56,36 @@ class HomeScreen extends StatelessWidget {
                       }),
                     ),
                     Expanded(
-                      child: ListView.builder(
-                          itemCount: stations.length,
+                      child: NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (state is StationsFetchedState &&
+                              scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                            context.bloc<StationsBloc>().add(FetchNextStations());
+                            return true;
+                          } else {
+                            return false;
+                          }
+                        },
+                        child: ListView.builder(
                           itemBuilder: (context, index) {
-                            return StationListItem(
-                              name: stations[index].name,
-                              stationImage: Image.network(stations[index].imageUrl),
-                              onTap: () {
-                                context.bloc<PlayerBloc>().add(PlayEvent(stations[index]));
-                              },
-                            );
-                          }),
+                            if (index < stations.length) {
+                              return StationListItem(
+                                name: stations[index].name,
+                                stationImage: Image.network(stations[index].imageUrl),
+                                onTap: () {
+                                  context.bloc<PlayerBloc>().add(PlayEvent(stations[index]));
+                                },
+                              );
+                            } else if (index == stations.length && !state.hasFetchedAll) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 );
