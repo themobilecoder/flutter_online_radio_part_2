@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
 import 'package:loading/loading.dart';
+import 'package:online_radio/widgets/loading_indicator_with_message.dart';
 import 'package:online_radio/widgets/media_player_sheet.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
+import 'package:online_radio/widgets/title_header.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
 import 'blocs/stations_bloc/stations_bloc.dart';
@@ -22,52 +24,29 @@ class HomeScreen extends StatelessWidget {
             builder: (context, state) {
               if (state is LoadingStations) {
                 context.bloc<StationsBloc>().add(FetchStations());
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text('Fetching Stations'),
-                    ],
-                  ),
+                return LoadingIndicatorWithMessage(
+                  label: 'Fetching stations',
                 );
               } else if (state is StationsFetchedState) {
                 final stations = (context.bloc<StationsBloc>().state as StationsFetchedState).stations;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Top Stations',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
-                            if (state is PausedState || state is StoppedState) {
-                              return IdleDots(
-                                color: Theme.of(context).accentColor,
-                              );
-                            } else {
-                              return Loading(
-                                indicator: LineScalePulseOutIndicator(),
-                                size: 30,
-                                color: Theme.of(context).accentColor,
-                              );
-                            }
-                          })
-                        ],
-                      ),
+                    TitleHeader(
+                      title: 'Top Stations',
+                      status: BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
+                        if (state is PausedState || state is StoppedState) {
+                          return IdleDots(
+                            color: Theme.of(context).accentColor,
+                          );
+                        } else {
+                          return Loading(
+                            indicator: LineScalePulseOutIndicator(),
+                            size: 30,
+                            color: Theme.of(context).accentColor,
+                          );
+                        }
+                      }),
                     ),
                     Expanded(
                       child: ListView.builder(
