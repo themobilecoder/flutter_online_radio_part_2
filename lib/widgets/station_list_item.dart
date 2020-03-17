@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:online_radio/widgets/station_favicon.dart';
 
 class StationListItem extends StatelessWidget {
   final GestureTapCallback onTap;
-  final Widget stationImage;
+  final String imageUrl;
   final String name;
 
-  StationListItem({this.onTap, @required this.stationImage, @required this.name});
+  StationListItem({this.onTap, @required this.imageUrl, @required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +18,8 @@ class StationListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: 64,
-              width: 64,
-              child: stationImage,
+            StationFavicon(
+              imageUrl: imageUrl,
             ),
             SizedBox(
               width: 20,

@@ -71,30 +71,17 @@ class HomeScreen extends StatelessWidget {
                         if (index < stations.length) {
                           return StationListItem(
                             name: stations[index].name,
-                            stationImage: CachedNetworkImage(
-                              imageUrl: stations[index].imageUrl,
-                              placeholder: (context, _) {
-                                return SvgPicture.asset(
-                                  'assets/images/music.svg',
-                                  semanticsLabel: 'Music',
-                                  color: Theme.of(context).textTheme.body1.color,
-                                );
-                              },
-                              errorWidget: (context, _, __) {
-                                return SvgPicture.asset(
-                                  'assets/images/music.svg',
-                                  semanticsLabel: 'Music',
-                                  color: Theme.of(context).textTheme.body1.color,
-                                );
-                              },
-                            ),
+                            imageUrl: stations[index].imageUrl,
                             onTap: () {
                               context.bloc<PlayerBloc>().add(PlayEvent(stations[index]));
                             },
                           );
                         } else if (index == stations.length && !state.hasFetchedAll) {
                           return Center(
-                            child: CircularProgressIndicator(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: CircularProgressIndicator(),
+                            ),
                           );
                         } else {
                           return null;
