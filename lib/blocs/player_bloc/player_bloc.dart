@@ -28,20 +28,28 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
   Stream<PlayerState> _handlePlayEvent(PlayEvent playEvent) async* {
     if (state is StoppedState) {
-      radioPlayer.setUrl(playEvent.station.radioUrl);
-      radioPlayer.play();
+      radioPlayer.setUrl(playEvent.station.radioUrl).then((_) {
+        radioPlayer.play();
+      });
       yield PlayingState(playEvent.station);
     } else if (state is PausedState) {
       if ((state as PausedState).currentStation != playEvent.station) {
-        radioPlayer.setUrl(playEvent.station.radioUrl);
+        radioPlayer.setUrl(playEvent.station.radioUrl).then((_) {
+          radioPlayer.play();
+        });
+      } else {
+        radioPlayer.play();
       }
-      radioPlayer.play();
+
       yield PlayingState(playEvent.station);
     } else if (state is PlayingState) {
       if ((state as PlayingState).currentStation != playEvent.station) {
-        radioPlayer.setUrl(playEvent.station.radioUrl);
+        radioPlayer.setUrl(playEvent.station.radioUrl).then((_) {
+          radioPlayer.play();
+        });
+      } else {
+        radioPlayer.play();
       }
-      radioPlayer.play();
       yield PlayingState(playEvent.station);
     }
   }
