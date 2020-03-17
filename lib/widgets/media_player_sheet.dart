@@ -18,7 +18,7 @@ class MediaPlayerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 80,
       color: backgroundColor ?? Theme.of(context).primaryColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
