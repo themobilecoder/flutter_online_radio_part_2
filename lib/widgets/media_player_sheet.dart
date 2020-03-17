@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class MediaPlayerSheet extends StatelessWidget {
   final String imageUrl;
@@ -30,7 +32,23 @@ class MediaPlayerSheet extends StatelessWidget {
               child: Container(
                 height: 50,
                 width: 50,
-                child: Image.network(imageUrl),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  placeholder: (context, _) {
+                    return SvgPicture.asset(
+                      'assets/images/music.svg',
+                      semanticsLabel: 'Music',
+                      color: Theme.of(context).textTheme.body1.color,
+                    );
+                  },
+                  errorWidget: (context, _, __) {
+                    return SvgPicture.asset(
+                      'assets/images/music.svg',
+                      semanticsLabel: 'Music',
+                      color: Theme.of(context).textTheme.body1.color,
+                    );
+                  },
+                ),
               ),
             ),
           ),

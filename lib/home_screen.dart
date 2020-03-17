@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:online_radio/widgets/loading_indicator_with_message.dart';
@@ -69,7 +71,23 @@ class HomeScreen extends StatelessWidget {
                         if (index < stations.length) {
                           return StationListItem(
                             name: stations[index].name,
-                            stationImage: Image.network(stations[index].imageUrl),
+                            stationImage: CachedNetworkImage(
+                              imageUrl: stations[index].imageUrl,
+                              placeholder: (context, _) {
+                                return SvgPicture.asset(
+                                  'assets/images/music.svg',
+                                  semanticsLabel: 'Music',
+                                  color: Theme.of(context).textTheme.body1.color,
+                                );
+                              },
+                              errorWidget: (context, _, __) {
+                                return SvgPicture.asset(
+                                  'assets/images/music.svg',
+                                  semanticsLabel: 'Music',
+                                  color: Theme.of(context).textTheme.body1.color,
+                                );
+                              },
+                            ),
                             onTap: () {
                               context.bloc<PlayerBloc>().add(PlayEvent(stations[index]));
                             },
