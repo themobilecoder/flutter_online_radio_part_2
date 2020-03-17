@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
 import 'package:loading/loading.dart';
-import 'package:online_radio/station.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
@@ -10,9 +9,6 @@ import 'blocs/stations_bloc/stations_bloc.dart';
 import 'widgets/idle_dots.dart';
 
 class HomeScreen extends StatelessWidget {
-  final _planetRockUrl = 'https://stream-mz.planetradio.co.uk/planetrock.mp3';
-  final _planetRockImage = 'assets/images/planet_rock.png';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +20,7 @@ class HomeScreen extends StatelessWidget {
           child: BlocBuilder<StationsBloc, StationsState>(
             builder: (context, state) {
               if (state is LoadingStations) {
+                context.bloc<StationsBloc>().add(FetchStations());
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -38,6 +35,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               } else if (state is StationsFetchedState) {
+                final stations = (context.bloc<StationsBloc>().state as StationsFetchedState).stations;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -72,11 +70,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                          itemCount: 40,
+                          itemCount: stations.length,
                           itemBuilder: (context, index) {
                             return StationListItem(
-                              name: 'Planet Rock',
-                              stationImage: Image.asset(_planetRockImage),
+                              name: stations[index].name,
+                              stationImage: Image.network(stations[index].imageUrl),
+                              onTap: () {
+                                context.bloc<PlayerBloc>().add(PlayEvent(stations[index]));
+                              },
                             );
                           }),
                     ),
@@ -89,55 +90,108 @@ class HomeScreen extends StatelessWidget {
               }
             },
           )),
-      bottomSheet: Container(
-        color: Theme.of(context).primaryColor,
-        height: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                height: 50,
-                width: 50,
-                child: Image.asset(_planetRockImage),
-              ),
-            ),
-            Text(
-              'Planet Rock',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: BlocBuilder<PlayerBloc, PlayerState>(
-                builder: (context, state) {
-                  if (state is PausedState || state is StoppedState) {
-                    return IconButton(
-                      icon: Icon(
-                        Icons.play_arrow,
-                        size: 32,
+      bottomSheet: BlocBuilder<PlayerBloc, PlayerState>(
+        builder: (context, state) {
+          if (state is StoppedState) {
+            return Container(
+              color: Theme.of(context).primaryColor,
+              height: 100,
+            );
+          } else if (state is PlayingState) {
+            final currentStation = state.currentStation;
+            return Container(
+              height: 100,
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        child: Image.network(currentStation.imageUrl),
                       ),
-                      onPressed: () {
-                        context.bloc<PlayerBloc>().add(PlayEvent(Station(_planetRockUrl, '', 'Planet Rock')));
-                      },
-                    );
-                  } else {
-                    return IconButton(
-                      icon: Icon(
-                        Icons.pause,
-                        size: 32,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child: Text(
+                        currentStation.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () {
-                        context.bloc<PlayerBloc>().add(PauseEvent());
-                      },
-                    );
-                  }
-                },
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.pause,
+                            size: 32,
+                          ),
+                          onPressed: () {
+                            context.bloc<PlayerBloc>().add(PauseEvent());
+                          },
+                        )),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
+            );
+          } else {
+            final currentStation = (state as PausedState).currentStation;
+            return Container(
+              height: 100,
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        child: Image.network(currentStation.imageUrl),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child: Text(
+                        currentStation.name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.play_arrow,
+                            size: 32,
+                          ),
+                          onPressed: () {
+                            context.bloc<PlayerBloc>().add(PlayEvent(currentStation));
+                          },
+                        )),
+                  )
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }

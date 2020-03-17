@@ -37,6 +37,12 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       }
       radioPlayer.play();
       yield PlayingState(playEvent.station);
+    } else if (state is PlayingState) {
+      if ((state as PlayingState).currentStation != playEvent.station) {
+        radioPlayer.setUrl(playEvent.station.radioUrl);
+      }
+      radioPlayer.play();
+      yield PlayingState(playEvent.station);
     }
   }
 

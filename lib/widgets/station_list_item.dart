@@ -10,24 +10,27 @@ class StationListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: 60,
-              width: 60,
+              height: 64,
+              width: 64,
               child: stationImage,
             ),
             SizedBox(
               width: 20,
             ),
-            Text(
-              name,
-              style: Theme.of(context).textTheme.body2,
+            Expanded(
+              child: Text(
+                name,
+                style: Theme.of(context).textTheme.body2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
