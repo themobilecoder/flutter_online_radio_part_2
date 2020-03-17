@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading/indicator/line_scale_pulse_out_indicator.dart';
-import 'package:loading/loading.dart';
 import 'package:online_radio/widgets/loading_indicator_with_message.dart';
 import 'package:online_radio/widgets/media_player_sheet.dart';
+import 'package:online_radio/widgets/radio_status_animation.dart';
 import 'package:online_radio/widgets/station_list_item.dart';
 import 'package:online_radio/widgets/title_header.dart';
 
 import 'blocs/player_bloc/player_bloc.dart';
 import 'blocs/stations_bloc/stations_bloc.dart';
-import 'widgets/idle_dots.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -20,18 +18,12 @@ class HomeScreen extends StatelessWidget {
       ),
       body: BlocBuilder<StationsBloc, StationsState>(
         condition: (context, state) {
-          if (state is FetchingNextStationsState) {
-            return false;
-          } else {
-            return true;
-          }
+          return (state is! FetchingNextStationsState);
         },
         builder: (context, state) {
           if (state is LoadingStations) {
             context.bloc<StationsBloc>().add(FetchStations());
-            return LoadingIndicatorWithMessage(
-              label: 'Fetching stations',
-            );
+            return LoadingIndicatorWithMessage(label: 'Fetching stations');
           } else if (state is StationsFetchedState) {
             final stations = state.stations;
             return Column(
@@ -41,15 +33,9 @@ class HomeScreen extends StatelessWidget {
                   title: 'Top Stations',
                   status: BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
                     if (state is PausedState || state is StoppedState) {
-                      return IdleDots(
-                        color: Theme.of(context).accentColor,
-                      );
+                      return PausedStatus();
                     } else {
-                      return Loading(
-                        indicator: LineScalePulseOutIndicator(),
-                        size: 30,
-                        color: Theme.of(context).accentColor,
-                      );
+                      return PlayingStatus();
                     }
                   }),
                 ),
@@ -91,9 +77,7 @@ class HomeScreen extends StatelessWidget {
                 BlocBuilder<PlayerBloc, PlayerState>(
                   builder: (context, state) {
                     if (state is! StoppedState) {
-                      return SizedBox(
-                        height: 80,
-                      );
+                      return SizedBox(height: 80);
                     } else {
                       return SizedBox();
                     }
