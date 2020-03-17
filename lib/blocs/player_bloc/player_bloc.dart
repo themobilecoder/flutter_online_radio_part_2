@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:online_radio/radio/radio_player.dart';
+import 'package:online_radio/radio/radio_state.dart';
 import 'package:online_radio/station.dart';
 
 part 'player_event.dart';
@@ -11,7 +12,13 @@ part 'player_state.dart';
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final RadioPlayer radioPlayer;
 
-  PlayerBloc({@required this.radioPlayer}) : assert(radioPlayer != null);
+  PlayerBloc({@required this.radioPlayer}) : assert(radioPlayer != null) {
+    radioPlayer.radioStateStream.listen((radioState) {
+      if (radioState == RadioState.PLAYING && state is PausedState) {
+        this.add(PlayEvent((state as PausedState).currentStation));
+      }
+    });
+  }
 
   @override
   PlayerState get initialState => StoppedState();
@@ -21,7 +28,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     if (event is PlayEvent) {
       yield* _handlePlayEvent(event);
     } else if (event is PauseEvent) {
-      radioPlayer.pause();
       yield* _handlePauseEvent(event);
     }
   }
