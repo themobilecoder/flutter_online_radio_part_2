@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:online_radio/widgets/station_favicon.dart';
 
 class MediaPlayerSheet extends StatelessWidget {
   final String imageUrl;
@@ -28,27 +27,9 @@ class MediaPlayerSheet extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                height: 50,
-                width: 50,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  placeholder: (context, _) {
-                    return SvgPicture.asset(
-                      'assets/images/music.svg',
-                      semanticsLabel: 'Music',
-                      color: Theme.of(context).textTheme.body1.color,
-                    );
-                  },
-                  errorWidget: (context, _, __) {
-                    return SvgPicture.asset(
-                      'assets/images/music.svg',
-                      semanticsLabel: 'Music',
-                      color: Theme.of(context).textTheme.body1.color,
-                    );
-                  },
-                ),
+              padding: const EdgeInsets.all(18.0),
+              child: StationFavicon(
+                imageUrl: imageUrl,
               ),
             ),
           ),
