@@ -5,7 +5,7 @@ abstract class StationsState {
   const StationsState();
 }
 
-class LoadingStations extends StationsState {}
+class LoadingStationsState extends StationsState {}
 
 class FetchingNextStationsState extends StationsState {}
 

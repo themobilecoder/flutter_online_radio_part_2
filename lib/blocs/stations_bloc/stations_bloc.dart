@@ -15,14 +15,14 @@ class StationsBloc extends Bloc<StationsEvent, StationsState> {
   StationsBloc({@required this.stationRepository}) : assert(stationRepository != null);
 
   @override
-  StationsState get initialState => LoadingStations();
+  StationsState get initialState => LoadingStationsState();
 
   @override
   Stream<StationsState> mapEventToState(
     StationsEvent event,
   ) async* {
     if (event is FetchStations) {
-      yield (LoadingStations());
+      yield (LoadingStationsState());
       final List<Station> stations = await stationRepository.getStationsByCountryPaginated('au', 0, _pageSize);
       yield StationsFetchedState(stations: stations, stationPageIndex: 0, hasFetchedAll: false);
     } else if (event is FetchNextStations) {
