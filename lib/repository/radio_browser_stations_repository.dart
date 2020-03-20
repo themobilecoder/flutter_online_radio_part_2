@@ -5,7 +5,7 @@ import 'package:online_radio/station.dart';
 
 class RadioBrowserRepository extends StationRepository {
   final Dio _dio;
-  static final String _baseUrl = 'http://fr1.api.radio-browser.info';
+  static final String _baseUrl = 'https://fr1.api.radio-browser.info';
   static final String _stationsByCountryCodeUrl = '$_baseUrl/json/stations/bycountrycodeexact/';
 
   RadioBrowserRepository(this._dio) {
@@ -22,14 +22,14 @@ class RadioBrowserRepository extends StationRepository {
     final Response rawStationsJson = await _dio.get(
       _buildUrlToSortByPopularityWithPagination(stationsFromCountryCodeUrl, offset, limit),
       options: buildCacheOptions(
-        Duration(days: 7),
+        Duration(days: 1),
       ),
     );
     final List<Station> stations = (rawStationsJson.data as List)
-        .map((it) => Station(
-              it['url_resolved'],
-              it['favicon'],
-              it['name'],
+        .map((responseJson) => Station(
+              responseJson['url_resolved'],
+              responseJson['favicon'],
+              responseJson['name'],
             ))
         .toList();
     return Future.value(stations);
