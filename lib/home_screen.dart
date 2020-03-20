@@ -21,8 +21,10 @@ class HomeScreen extends StatelessWidget {
           return (state is! FetchingNextStationsState);
         },
         builder: (context, state) {
-          if (state is LoadingStationsState) {
+          if (state is InitialState) {
             context.bloc<StationsBloc>().add(FetchStations());
+            return SizedBox();
+          } else if (state is LoadingStationsState) {
             return LoadingIndicatorWithMessage(label: 'Fetching stations');
           } else if (state is StationsFetchedState) {
             final stations = state.stations;

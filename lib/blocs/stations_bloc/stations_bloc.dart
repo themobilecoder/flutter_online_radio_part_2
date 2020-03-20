@@ -16,7 +16,7 @@ class StationsBloc extends Bloc<StationsEvent, StationsState> {
   StationsBloc({@required this.stationRepository}) : assert(stationRepository != null);
 
   @override
-  StationsState get initialState => LoadingStationsState();
+  StationsState get initialState => InitialState();
 
   @override
   Stream<StationsState> mapEventToState(
@@ -35,23 +35,21 @@ class StationsBloc extends Bloc<StationsEvent, StationsState> {
       } catch (err) {
         yield StationsFetchErrorState();
       }
-    } else if (event is FetchNextStations) {
-      if (state is StationsFetchedState) {
-        final currentState = (state as StationsFetchedState);
-        final int index = currentState.stationPageIndex + _pageSize;
-        final List<Station> oldStations = currentState.stations;
-        yield FetchingNextStationsState();
-        try {
-          final List<Station> stations =
-              await stationRepository.getStationsByCountryPaginated(_countryCode, index, _pageSize);
-          yield StationsFetchedState(
-            stations: oldStations..addAll(stations),
-            stationPageIndex: index,
-            hasFetchedAll: (stations.length < _pageSize) ? true : false,
-          );
-        } catch (err) {
-          yield StationsFetchErrorState();
-        }
+    } else if (event is FetchNextStations && state is StationsFetchedState) {
+      final currentState = (state as StationsFetchedState);
+      final int index = currentState.stationPageIndex + _pageSize;
+      final List<Station> oldStations = currentState.stations;
+      yield FetchingNextStationsState();
+      try {
+        final List<Station> stations =
+            await stationRepository.getStationsByCountryPaginated(_countryCode, index, _pageSize);
+        yield StationsFetchedState(
+          stations: oldStations..addAll(stations),
+          stationPageIndex: index,
+          hasFetchedAll: (stations.length < _pageSize) ? true : false,
+        );
+      } catch (err) {
+        yield StationsFetchErrorState();
       }
     }
   }
