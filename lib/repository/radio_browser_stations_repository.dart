@@ -5,7 +5,7 @@ import 'package:online_radio/station.dart';
 
 class RadioBrowserRepository extends StationRepository {
   final Dio _dio;
-  static final String _baseUrl = 'http://45.77.62.161';
+  static final String _baseUrl = 'http://fr1.api.radio-browser.info';
   static final String _stationsByCountryCodeUrl = '$_baseUrl/json/stations/bycountrycodeexact/';
 
   RadioBrowserRepository(this._dio) {
