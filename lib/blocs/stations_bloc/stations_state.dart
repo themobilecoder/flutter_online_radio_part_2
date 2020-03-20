@@ -16,8 +16,11 @@ class StationsFetchedState extends StationsState {
   final int stationPageIndex;
   final bool hasFetchedAll;
 
-  const StationsFetchedState({@required this.stations, @required this.stationPageIndex, @required this.hasFetchedAll})
-      : assert(stations != null);
+  const StationsFetchedState({
+    @required this.stations,
+    @required this.stationPageIndex,
+    @required this.hasFetchedAll,
+  }) : assert(stations != null && stationPageIndex != null && hasFetchedAll != null);
 }
 
 class StationsFetchErrorState extends StationsState {}
