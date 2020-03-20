@@ -87,7 +87,21 @@ class HomeScreen extends StatelessWidget {
             );
           } else {
             return Center(
-              child: Text('Error Fetching Statons'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('An error has occurred'),
+                  SizedBox(height: 20),
+                  MaterialButton(
+                    onPressed: () {
+                      context.bloc<StationsBloc>().add(FetchStations());
+                    },
+                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).accentColor,
+                    child: Text('Retry'),
+                  )
+                ],
+              ),
             );
           }
         },

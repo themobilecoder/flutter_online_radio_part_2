@@ -22,6 +22,7 @@ class StationsBloc extends Bloc<StationsEvent, StationsState> {
     StationsEvent event,
   ) async* {
     if (event is FetchStations) {
+      yield (LoadingStations());
       final List<Station> stations = await stationRepository.getStationsByCountryPaginated('au', 0, _pageSize);
       yield StationsFetchedState(stations: stations, stationPageIndex: 0, hasFetchedAll: false);
     } else if (event is FetchNextStations) {
